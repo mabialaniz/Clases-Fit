@@ -1,0 +1,9 @@
+{
+  "name": "M.A. Pilates & Yoga",
+  "short_name": "M.A. Pilates",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#fbf7f5",
+  "theme_color": "#241b1b",
+  "lang": "es"
+}

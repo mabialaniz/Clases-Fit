@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#b98f8f">
+<title>M.A. Pilates & Yoga</title>
+<link rel="manifest" href="manifest.json">
+<style>
+:root{--rose:#c89b9b;--dark:#241b1b;--cream:#fbf7f5;--muted:#756767;--line:#eadfdd}
+*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:var(--cream);color:var(--dark)}
+.app{max-width:520px;margin:auto;min-height:100vh;background:#fff;box-shadow:0 0 30px #00000012}
+header{background:var(--dark);color:#fff;padding:28px 22px 24px;border-radius:0 0 24px 24px}
+header h1{margin:0;font-size:27px;letter-spacing:.5px}header p{margin:8px 0 0;color:#eadfdd}
+main{padding:22px}.screen{display:none}.screen.active{display:block}
+.card{border:1px solid var(--line);border-radius:18px;padding:18px;margin:14px 0;background:#fff}
+.hero{background:linear-gradient(135deg,#fff,#f5e9e7)}
+h2{font-size:23px;margin:4px 0 8px}.sub{color:var(--muted);margin:0 0 18px}
+label{display:block;font-size:14px;font-weight:bold;margin:14px 0 6px}
+input,select{width:100%;padding:14px;border:1px solid #d9cccc;border-radius:12px;font-size:16px;background:#fff}
+button{border:0;border-radius:13px;padding:14px 17px;font-size:16px;font-weight:bold;cursor:pointer}
+.primary{background:var(--rose);color:#fff;width:100%;margin-top:16px}.secondary{background:#f3e8e6;color:var(--dark)}
+.service{display:flex;justify-content:space-between;align-items:center;gap:10px}.service strong{font-size:18px}
+.pill{display:inline-block;background:#f3e8e6;border-radius:30px;padding:6px 10px;font-size:13px}
+.reserve{display:flex;justify-content:space-between;align-items:center;gap:12px;border-top:1px solid var(--line);padding:13px 0}
+.reserve:first-child{border-top:0}.reserve small{color:var(--muted)}.danger{background:#f8e2e2;color:#9b3333;padding:9px 12px;font-size:13px}
+nav{position:sticky;bottom:0;background:#fff;border-top:1px solid var(--line);display:flex;padding:9px 8px calc(9px + env(safe-area-inset-bottom));gap:6px}
+nav button{flex:1;background:transparent;color:var(--muted);font-size:12px;padding:10px 5px}nav button.active{background:#f3e8e6;color:var(--dark)}
+.notice{padding:12px 14px;border-radius:12px;background:#f8f1ef;color:#594b4b;font-size:14px}
+.empty{text-align:center;color:var(--muted);padding:25px 5px}
+</style>
+</head>
+<body>
+<div class="app">
+<header>
+  <h1>M.A. PILATES & YOGA</h1>
+  <p>Tu espacio de movimiento, bienestar y energía ✨</p>
+</header>
+
+<main>
+<section id="home" class="screen active">
+  <div class="card hero">
+    <h2>Hola, <span id="helloName">alumna</span> ✨</h2>
+    <p class="sub">Reservá tu clase de forma simple y llevá el control de tus turnos.</p>
+    <button class="primary" onclick="show('reserve')">Reservar una clase</button>
+  </div>
+  <div class="card"><div class="service"><div><strong>Pilates Reformer</strong><br><span class="sub">45 min</span></div><span class="pill">Clase</span></div></div>
+  <div class="card"><div class="service"><div><strong>Yoga</strong><br><span class="sub">Bienestar</span></div><span class="pill">Clase</span></div></div>
+</section>
+
+<section id="reserve" class="screen">
+  <h2>Reservar una clase</h2><p class="sub">Completá tus datos y elegí tu horario.</p>
+  <div class="card">
+    <label>Nombre de la alumna</label>
+    <input id="name" placeholder="Ej.: María" autocomplete="name">
+    <label>Clase</label>
+    <select id="classType"><option>Pilates Reformer — 45 min</option><option>Yoga</option></select>
+    <label>Fecha</label>
+    <input id="date" type="date">
+    <label>Horario</label>
+    <select id="time">
+      <option>08:00</option><option>09:00</option><option>10:00</option><option>11:00</option>
+      <option>16:00</option><option>17:00</option><option>18:00</option><option>19:00</option><option>20:00</option>
+    </select>
+    <button class="primary" onclick="reserve()">Confirmar reserva</button>
+  </div>
+  <div id="msg"></div>
+</section>
+
+<section id="my" class="screen">
+  <h2>Mis reservas</h2><p class="sub">Tus próximas clases aparecen aquí.</p>
+  <div class="card" id="reservations"></div>
+</section>
+
+<section id="profile" class="screen">
+  <h2>Mi perfil</h2><p class="sub">Guardá tu nombre para no tener que escribirlo cada vez.</p>
+  <div class="card">
+    <label>Nombre</label><input id="profileName" placeholder="Tu nombre">
+    <button class="primary" onclick="saveProfile()">Guardar nombre</button>
+  </div>
+  <div class="notice">Esta primera versión guarda la información en este teléfono. No necesitás pagar ni crear una cuenta.</div>
+</section>
+</main>
+
+<nav>
+<button id="n-home" class="active" onclick="show('home')">🏠<br>Inicio</button>
+<button id="n-reserve" onclick="show('reserve')">📅<br>Reservar</button>
+<button id="n-my" onclick="show('my')">📋<br>Mis turnos</button>
+<button id="n-profile" onclick="show('profile')">👤<br>Perfil</button>
+</nav>
+</div>
+
+<script>
+const KEY='ma_pilates_reservas';
+const NAME='ma_pilates_nombre';
+const $=id=>document.getElementById(id);
+function show(id){
+ document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+ $(id).classList.add('active');
+ document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
+ $('n-'+id).classList.add('active');
+ if(id==='my') render();
+ if(id==='profile') $('profileName').value=localStorage.getItem(NAME)||'';
+}
+function saveProfile(){
+ const n=$('profileName').value.trim();
+ if(!n){alert('Escribí tu nombre.');return}
+ localStorage.setItem(NAME,n); $('helloName').textContent=n; $('name').value=n;
+ alert('Nombre guardado ✨'); show('home');
+}
+function reserve(){
+ const n=$('name').value.trim(), d=$('date').value, t=$('time').value, c=$('classType').value;
+ if(!n||!d||!t){$('msg').innerHTML='<div class="notice">Completá nombre, fecha y horario.</div>';return}
+ const arr=JSON.parse(localStorage.getItem(KEY)||'[]');
+ arr.push({id:Date.now(),name:n,date:d,time:t,classType:c});
+ localStorage.setItem(KEY,JSON.stringify(arr));
+ localStorage.setItem(NAME,n); $('helloName').textContent=n;
+ $('msg').innerHTML='<div class="notice">✅ Reserva confirmada. ¡Te esperamos!</div>';
+ setTimeout(()=>show('my'),500);
+}
+function cancel(id){
+ const arr=JSON.parse(localStorage.getItem(KEY)||'[]').filter(x=>x.id!==id);
+ localStorage.setItem(KEY,JSON.stringify(arr)); render();
+}
+function render(){
+ const arr=JSON.parse(localStorage.getItem(KEY)||'[]').sort((a,b)=>(a.date+a.time).localeCompare(b.date+b.time));
+ if(!arr.length){$('reservations').innerHTML='<div class="empty">Todavía no tenés reservas.<br><br><button class="secondary" onclick="show(\'reserve\')">Reservar una clase</button></div>';return}
+ $('reservations').innerHTML=arr.map(x=>`<div class="reserve"><div><strong>${x.classType}</strong><br><small>👤 ${x.name}<br>📅 ${x.date.split('-').reverse().join('/')} · ⏰ ${x.time}</small></div><button class="danger" onclick="cancel(${x.id})">Cancelar</button></div>`).join('');
+}
+const today=new Date(); $('date').min=today.toISOString().slice(0,10);
+const saved=localStorage.getItem(NAME); if(saved){$('helloName').textContent=saved;$('name').value=saved}
+if('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(()=>{});
+</script>
+</body>
+</html>
