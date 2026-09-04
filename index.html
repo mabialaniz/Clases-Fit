@@ -157,7 +157,36 @@ function reserve(){
  setTimeout(()=>show('my'),500);
 }
 
-function cancel(id){
+const ADMIN_PASSWORD='1234';
+
+function adminLogin(){
+ const pass=$('adminPass').value;
+
+ if(pass!==ADMIN_PASSWORD){
+   $('adminMsg').innerHTML='<div class="notice">❌ Contraseña incorrecta.</div>';
+   return;
+ }
+
+ const arr=JSON.parse(localStorage.getItem(KEY)||'[]')
+   .sort((a,b)=>(a.date+a.time).localeCompare(b.date+b.time));
+
+ if(!arr.length){
+   $('adminMsg').innerHTML='<div class="empty">No hay reservas todavía.</div>';
+   return;
+ }
+
+ $('adminMsg').innerHTML=
+   '<div class="card">'+
+   '<h3>Reservas de alumnas</h3>'+
+   arr.map(x=>
+     '<div class="reserve">'+
+     '<div><strong>'+x.name+'</strong><br>'+
+     '<small>'+x.classType+'<br>📅 '+x.date.split('-').reverse().join('/')+
+     ' · ⏰ '+x.time+'</small></div>'+
+     '</div>'
+   ).join('')+
+   '</div>';
+  }function cancel(id){
  const arr=JSON.parse(localStorage.getItem(KEY)||'[]').filter(x=>x.id!==id);
  localStorage.setItem(KEY,JSON.stringify(arr)); render();
 }
