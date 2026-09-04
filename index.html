@@ -71,7 +71,17 @@ nav button{flex:1;background:transparent;color:var(--muted);font-size:12px;paddi
   <h2>Mis reservas</h2><p class="sub">Tus próximas clases aparecen aquí.</p>
   <div class="card" id="reservations"></div>
 </section>
+<section id="admin" class="screen">
+  <h2>Administradora 🔐</h2>
+  <p class="sub">Ingresá la contraseña para ver las reservas.</p>
 
+  <div class="card">
+    <label>Contraseña</label>
+    <input id="adminPass" type="password" placeholder="Ingresá tu contraseña">
+    <button class="primary" onclick="adminLogin()">Ingresar</button>
+    <div id="adminMsg"></div>
+  </div>
+</section>
 <section id="profile" class="screen">
   <h2>Mi perfil</h2><p class="sub">Guardá tu nombre para no tener que escribirlo cada vez.</p>
   <div class="card">
