@@ -145,7 +145,7 @@ function reserve(){
 
  setTimeout(()=>show('my'),500);
 }
-}
+
 function cancel(id){
  const arr=JSON.parse(localStorage.getItem(KEY)||'[]').filter(x=>x.id!==id);
  localStorage.setItem(KEY,JSON.stringify(arr)); render();
