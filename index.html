@@ -110,13 +110,41 @@ function saveProfile(){
 }
 function reserve(){
  const n=$('name').value.trim(), d=$('date').value, t=$('time').value, c=$('classType').value;
- if(!n||!d||!t){$('msg').innerHTML='<div class="notice">Completá nombre, fecha y horario.</div>';return}
+
+ if(!n||!d||!t){
+   $('msg').innerHTML='<div class="notice">Completá nombre, fecha y horario.</div>';
+   return;
+ }
+
  const arr=JSON.parse(localStorage.getItem(KEY)||'[]');
- arr.push({id:Date.now(),name:n,date:d,time:t,classType:c});
+
+ const sameClass=arr.filter(x =>
+   x.date===d &&
+   x.time===t &&
+   x.classType===c
+ );
+
+ if(sameClass.length>=5){
+   $('msg').innerHTML='<div class="notice">⚠️ Esta clase está completa. Elegí otro horario.</div>';
+   return;
+ }
+
+ arr.push({
+   id:Date.now(),
+   name:n,
+   date:d,
+   time:t,
+   classType:c
+ });
+
  localStorage.setItem(KEY,JSON.stringify(arr));
- localStorage.setItem(NAME,n); $('helloName').textContent=n;
+ localStorage.setItem(NAME,n);
+ $('helloName').textContent=n;
+
  $('msg').innerHTML='<div class="notice">✅ Reserva confirmada. ¡Te esperamos!</div>';
+
  setTimeout(()=>show('my'),500);
+}
 }
 function cancel(id){
  const arr=JSON.parse(localStorage.getItem(KEY)||'[]').filter(x=>x.id!==id);
