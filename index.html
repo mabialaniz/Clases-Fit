@@ -192,7 +192,7 @@ const ADMIN_PASSWORD='1234';
      
      
    
-  }function cancel(id)
+  function cancel(id){
  const arr=JSON.parse(localStorage.getItem(KEY)||'[]').filter(x=>x.id!==id);
  localStorage.setItem(KEY,JSON.stringify(arr)); render();
 }
