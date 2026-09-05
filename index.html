@@ -182,11 +182,14 @@ function adminLogin(){
    arr.map(x=>
      '<div class="reserve">'+
      '<div><strong>'+x.name+'</strong><br>'+
-     '<small>'+x.classType+'<br>📅 '+x.date.split('-').reverse().join('/')+
-     ' · ⏰ '+x.time+'</small></div>'+
-     '</div>'
-   ).join('')+
-   '</div>';
+'<small>'+x.classType+'<br>📅 '+x.date.split('-').reverse().join('/')+
+' · ⏰ '+x.time+'</small></div>'+
+'<button onclick="cancel('+x.id+')">Cancelar</button>'+
+'</div>'
+     
+     
+     
+   
   }function cancel(id){
  const arr=JSON.parse(localStorage.getItem(KEY)||'[]').filter(x=>x.id!==id);
  localStorage.setItem(KEY,JSON.stringify(arr)); render();
