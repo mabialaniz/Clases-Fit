@@ -181,16 +181,26 @@ const ADMIN_PASSWORD='1234';
  }
 
  $('adminMsg').innerHTML=
-   '<div class="card">'+
-   '<h3>Reservas de alumnas</h3>'+
-   arr.map(x=>
-     '<div class="reserve">'+
-     '<div><strong>'+x.name+'</strong><br>'+
-     '<small>'+x.classType+'<br>📅 '+x.date.split('-').reverse().join('/')+
-     ' · ⏰ '+x.time+'</small></div>'+
-     '</div>'
-   ).join('')+
-   '</div>';
+  '<div class="card">'+
+  '<h3>Reservas de alumnas</h3>'+
+  arr.map(x=>{
+    const cantidad=arr.filter(r=>
+      r.date===x.date &&
+      r.time===x.time &&
+      r.classType===x.classType
+    ).length;
+
+    const estado=cantidad>=5
+      ? '<span class="pill">🔴 CUPO COMPLETO</span>'
+      : '<span class="pill">🟢 '+cantidad+'/5 · '+(5-cantidad)+' lugares disponibles</span>';
+
+    return '<div class="reserve">'+
+      '<div><strong>'+x.name+'</strong><br>'+
+      '<small>'+x.classType+'<br>📅 '+x.date.split('-').reverse().join('/')+
+      ' · ⏰ '+x.time+'<br>'+estado+'</small></div>'+
+      '</div>';
+  }).join('')+
+  '</div>';
 }
      
      
