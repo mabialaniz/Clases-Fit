@@ -139,7 +139,10 @@ function reserve(){
    $('msg').innerHTML='<div class="notice">⚠️ Esta clase está completa. Elegí otro horario.</div>';
    return;
  }
-
+if(sameClass.length>=5){
+  $('#msg').innerHTML='<div class="notice">Cupo completo. Elegí otro horario.</div>';
+  return;
+}
  arr.push({
    id:Date.now(),
    name:n,
