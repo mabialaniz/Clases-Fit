@@ -105,34 +105,43 @@ input,select{
 
 button{
   border:0;
-  border-radius:14px;
-  padding:14px 17px;
-  font-size:16px;
-  font-weight:bold;
+  border-radius:30px;
+  padding:13px 20px;
+  font-size:15px;
+  font-weight:600;
   cursor:pointer;
-  transition:.2s ease;
+  transition:all .2s ease;
+  letter-spacing:.2px;
 }
 
 button:active{
-  transform:scale(.98);
+  transform:scale(.96);
 }
 
 .primary{
-  background:var(--lavender);
+  background:linear-gradient(135deg,#b8a9d9,#9f8bc7);
   color:#fff;
   width:100%;
   margin-top:16px;
-  box-shadow:0 5px 14px #b8a9d933;
+  box-shadow:0 6px 16px #9f8bc733;
 }
 
 .primary:hover{
-  background:var(--lavender-dark);
+  transform:translateY(-1px);
+  box-shadow:0 8px 20px #9f8bc744;
 }
 
 .secondary{
-  background:var(--lavender-light);
-  color:var(--dark);
+  background:#eeeaf7;
+  color:#625578;
+  border:1px solid #ddd5ed;
 }
+
+.secondary:hover{
+  background:#e6e0f2;
+}
+
+
 
 .service{
   display:flex;
