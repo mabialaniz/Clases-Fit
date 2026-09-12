@@ -105,55 +105,108 @@ nav button{flex:1;background:transparent;color:var(--muted);font-size:12px;paddi
 <script>
 const KEY='ma_pilates_reservas';
 const NAME='ma_pilates_nombre';
+
 const $=id=>document.getElementById(id);
+
 function show(id){
  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
  $(id).classList.add('active');
+
  document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
  $('n-'+id).classList.add('active');
+
  if(id==='my') render();
  if(id==='profile') $('profileName').value=localStorage.getItem(NAME)||'';
 }
+
 function saveProfile(){
  const n=$('profileName').value.trim();
- if(!n){alert('Escribí tu nombre.');return}
- localStorage.setItem(NAME,n); $('helloName').textContent=n; $('name').value=n;
- alert('Nombre guardado ✨'); show('home');
-}<input id="date" type="date" onchange="mostrarProfesora()">
-<div id="profesoraSeleccionada" class="sub"></div>
-function mostrarProfesora(){
-  const fecha=$('date').value;
 
-  if(!fecha){
-    $('profesoraSeleccionada').textContent='';
-    return;
-  }
+ if(!n){
+   alert('Escribí tu nombre.');
+   return;
+ }
 
-  const dia=new Date(fecha+'T12:00:00').getDay();
+ localStorage.setItem(NAME,n);
+ $('helloName').textContent=n;
+ $('name').value=n;
 
-  const profesora=(dia===1||dia===3||dia===5||dia===6)
-    ? 'Maby'
-    : (dia===2||dia===4)
-      ? 'Celeste'
-      : '';
-
-  $('profesoraSeleccionada').textContent=
-    profesora ? '👩‍🏫 Profesora: '+profesora : '⚠️ Ese día no hay clases.';
+ alert('Nombre guardado ✨');
+ show('home');
 }
+
+function mostrarProfesora(){
+ const fecha=$('date').value;
+
+ if(!fecha){
+   $('profesoraSeleccionada').textContent='';
+   return;
+ }
+
+ const dia=new Date(fecha+'T12:00:00').getDay();
+
+ const profesora=(dia===1||dia===3||dia===5||dia===6)
+   ? 'Maby'
+   : (dia===2||dia===4)
+     ? 'Celeste'
+     : '';
+
+ $('profesoraSeleccionada').textContent=
+   profesora
+     ? '👩‍🏫 Profesora: '+profesora
+     : '⚠️ Ese día no hay clases.';
+}
+
+function reserve(){
+
+ const n=$('name').value.trim();
+ const d=$('date').value;
+ const t=$('time').value;
+ const c=$('classType').value;
+
+ if(!n||!d||!t){
+   $('msg').innerHTML='<div class="notice">Completá nombre, fecha y horario.</div>';
+   return;
+ }
+
+ const dia=new Date(d+'T12:00:00').getDay();
+
+ const profesora=(dia===1||dia===3||dia===5||dia===6)
+   ? 'Maby'
+   : (dia===2||dia===4)
+     ? 'Celeste'
+     : '';
+
+ if(!profesora){
+   $('msg').innerHTML='<div class="notice">⚠️ Ese día no hay clases.</div>';
+   return;
  }
 
  const arr=JSON.parse(localStorage.getItem(KEY)||'[]');
+
+ const sameClass=arr.filter(x=>
+   x.date===d &&
+   x.time===t &&
+   x.classType===c
+ );
+
+ if(sameClass.length>=5){
+   $('msg').innerHTML='<div class="notice">⚠️ Esta clase está completa. Elegí otro horario.</div>';
+   return;
+ }
 
  arr.push({
    id:Date.now(),
    name:n,
    date:d,
    time:t,
-   classType:c
+   classType:c,
+   teacher:profesora
  });
 
  localStorage.setItem(KEY,JSON.stringify(arr));
  localStorage.setItem(NAME,n);
+
  $('helloName').textContent=n;
 
  $('msg').innerHTML='<div class="notice">✅ Reserva confirmada. ¡Te esperamos!</div>';
@@ -162,9 +215,9 @@ function mostrarProfesora(){
 }
 
 const ADMIN_PASSWORDS=[
-  '1234',
-  '2222',
-  '1414'
+ '1234',
+ '2222',
+ '1414'
 ];
 
 function adminLogin(){
@@ -189,42 +242,78 @@ function adminLogin(){
   '<h3>Reservas de alumnas</h3>'+
   arr.map(x=>{
 
-    const cantidad=arr.filter(r=>
-      r.date===x.date &&
-      r.time===x.time &&
-      r.classType===x.classType
-    ).length;
+   const cantidad=arr.filter(r=>
+     r.date===x.date &&
+     r.time===x.time &&
+     r.classType===x.classType
+   ).length;
 
-    const estado=cantidad>=5
-      ? '<span class="pill">🔴 CUPO COMPLETO</span>'
-      : '<span class="pill">🟢 '+cantidad+'/5 · '+(5-cantidad)+' lugares disponibles</span>';
+   const estado=cantidad>=5
+     ? '<span class="pill">🔴 CUPO COMPLETO</span>'
+     : '<span class="pill">🟢 '+cantidad+'/5 · '+(5-cantidad)+' lugares disponibles</span>';
 
-    return '<div class="reserve">'+
-      '<div><strong>'+x.name+'</strong><br>'+
-      '<small>'+x.classType+'<br>'+
-      '📅 '+x.date.split('-').reverse().join('/')+
-      ' · ⏰ '+x.time+'<br>'+
-      '👩‍🏫 Profesora: '+(x.teacher||'')+'<br>'+
-      estado+
-      '</small></div>'+
-      '</div>';
+   return '<div class="reserve">'+
+     '<div><strong>'+x.name+'</strong><br>'+
+     '<small>'+x.classType+'<br>'+
+     '📅 '+x.date.split('-').reverse().join('/')+
+     ' · ⏰ '+x.time+'<br>'+
+     '👩‍🏫 Profesora: '+(x.teacher||'')+'<br>'+
+     estado+
+     '</small></div>'+
+     '</div>';
 
   }).join('')+
   '</div>';
 }
-     
-     
-   
-  function cancel(id){
- const arr=JSON.parse(localStorage.getItem(KEY)||'[]').filter(x=>x.id!==id);
- localStorage.setItem(KEY,JSON.stringify(arr)); render();
+
+function cancel(id){
+ const arr=JSON.parse(localStorage.getItem(KEY)||'[]')
+   .filter(x=>x.id!==id);
+
+ localStorage.setItem(KEY,JSON.stringify(arr));
+ render();
 }
+
 function render(){
- const arr=JSON.parse(localStorage.getItem(KEY)||'[]').sort((a,b)=>(a.date+a.time).localeCompare(b.date+b.time));
+
+ const arr=JSON.parse(localStorage.getItem(KEY)||'[]')
+   .sort((a,b)=>(a.date+a.time).localeCompare(b.date+b.time));
+
  if(!arr.length){
-const today=new Date(); $('date').min=today.toISOString().slice(0,10);
-const saved=localStorage.getItem(NAME); if(saved){$('helloName').textContent=saved;$('name').value=saved}
-if('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(()=>{});
+   $('reservations').innerHTML=
+    '<div class="empty">Todavía no tenés reservas.<br><br>'+
+    '<button class="secondary" onclick="show(\'reserve\')">Reservar una clase</button></div>';
+   return;
+ }
+
+ $('reservations').innerHTML=arr.map(x=>
+  `<div class="reserve">
+   <div>
+    <strong>${x.classType}</strong><br>
+    <small>👤 ${x.name}<br>
+    📅 ${x.date.split('-').reverse().join('/')} · ⏰ ${x.time}<br>
+    👩‍🏫 Profesora: ${x.teacher||''}</small>
+   </div>
+   <button class="danger" onclick="cancel(${x.id})">Cancelar</button>
+  </div>`
+ ).join('');
+}
+
+const today=new Date();
+$('date').min=today.toISOString().slice(0,10);
+
+const saved=localStorage.getItem(NAME);
+
+if(saved){
+ $('helloName').textContent=saved;
+ $('name').value=saved;
+}
+
+if('serviceWorker' in navigator){
+ navigator.serviceWorker.register('sw.js').catch(()=>{});
+}
 </script>
+
+ 
 </body>
 </html>
