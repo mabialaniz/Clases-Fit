@@ -121,30 +121,29 @@ function saveProfile(){
  alert('Nombre guardado ✨'); show('home');
 }<input id="date" type="date" onchange="mostrarProfesora()">
 <div id="profesoraSeleccionada" class="sub"></div>
-function reserve(){
- const n=$('name').value.trim(), d=$('date').value, t=$('time').value, c=$('classType').value;
+function mostrarProfesora(){
+  const fecha=$('date').value;
 
- if(!n||!d||!t){
-   $('msg').innerHTML='<div class="notice">Completá nombre, fecha y horario.</div>';
-   return;
+  if(!fecha){
+    $('profesoraSeleccionada').textContent='';
+    return;
+  }
+
+  const dia=new Date(fecha+'T12:00:00').getDay();
+
+  const profesora=(dia===1||dia===3||dia===5||dia===6)
+    ? 'Maby'
+    : (dia===2||dia===4)
+      ? 'Celeste'
+      : '';
+
+  $('profesoraSeleccionada').textContent=
+    profesora ? '👩‍🏫 Profesora: '+profesora : '⚠️ Ese día no hay clases.';
+}
  }
 
  const arr=JSON.parse(localStorage.getItem(KEY)||'[]');
 
- const sameClass=arr.filter(x =>
-   x.date===d &&
-   x.time===t &&
-   x.classType===c
- );
-
- if(sameClass.length>=5){
-   $('msg').innerHTML='<div class="notice">⚠️ Esta clase está completa. Elegí otro horario.</div>';
-   return;
- }
-if(sameClass.length>=5){
-  $('#msg').innerHTML='<div class="notice">Cupo completo. Elegí otro horario.</div>';
-  return;
-}
  arr.push({
    id:Date.now(),
    name:n,
