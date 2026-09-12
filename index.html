@@ -221,9 +221,7 @@ function adminLogin(){
 }
 function render(){
  const arr=JSON.parse(localStorage.getItem(KEY)||'[]').sort((a,b)=>(a.date+a.time).localeCompare(b.date+b.time));
- if(!arr.length){$('reservations').innerHTML='<div class="empty">Todavía no tenés reservas.<br><br><button class="secondary" onclick="show(\'reserve\')">Reservar una clase</button></div>';return}
- $('reservations').innerHTML=arr.map(x=>`<div class="reserve"><div><strong>${x.classType}</strong><br><small>👤 ${x.name}<br>📅 ${x.date.split('-').reverse().join('/')} · ⏰ ${x.time}</small></div><button class="danger" onclick="cancel(${x.id})">Cancelar</button></div>`).join('');
-}
+ if(!arr.length){
 const today=new Date(); $('date').min=today.toISOString().slice(0,10);
 const saved=localStorage.getItem(NAME); if(saved){$('helloName').textContent=saved;$('name').value=saved}
 if('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(()=>{});
