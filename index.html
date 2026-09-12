@@ -167,8 +167,7 @@ const ADMIN_PASSWORDS=[
   '1414'
 ];
 
-
- function adminLogin(){
+function adminLogin(){
 
  const pass=$('adminPass').value;
 
@@ -210,72 +209,6 @@ const ADMIN_PASSWORDS=[
       '</small></div>'+
       '</div>';
 
-  }).join('')+
-  '</div>';
-}
-
- if(!arr.length){
-   $('adminMsg').innerHTML='<div class="empty">No hay reservas todavía.</div>';
-   return;
- }
-
- $('adminMsg').innerHTML=
-  '<div class="card">'+
-  '<h3>Reservas de alumnas</h3>'+
-  arr.map(x=>{
-
-    const cantidad=arr.filter(r=>
-      r.date===x.date &&
-      r.time===x.time &&
-      r.classType===x.classType
-    ).length;
-
-    const estado=cantidad>=5
-      ? '<span class="pill">🔴 CUPO COMPLETO</span>'
-      : '<span class="pill">🟢 '+cantidad+'/5 · '+(5-cantidad)+' lugares disponibles</span>';
-
-    return '<div class="reserve">'+
-      '<div><strong>'+x.name+'</strong><br>'+
-      '<small>'+x.classType+'<br>'+
-      '📅 '+x.date.split('-').reverse().join('/')+
-      ' · ⏰ '+x.time+'<br>'+
-      '👩‍🏫 Profesora: '+(x.teacher||'')+'<br>'+
-      estado+
-      '</small></div>'+
-      '</div>';
-
-  }).join('')+
-  '</div>';
-}    
- }
-
- const arr=JSON.parse(localStorage.getItem(KEY)||'[]')
-   .sort((a,b)=>(a.date+a.time).localeCompare(b.date+b.time));
-
- if(!arr.length){
-   $('adminMsg').innerHTML='<div class="empty">No hay reservas todavía.</div>';
-   return;
- }
-
- $('adminMsg').innerHTML=
-  '<div class="card">'+
-  '<h3>Reservas de alumnas</h3>'+
-  arr.map(x=>{
-    const cantidad=arr.filter(r=>
-      r.date===x.date &&
-      r.time===x.time &&
-      r.classType===x.classType
-    ).length;
-
-    const estado=cantidad>=5
-      ? '<span class="pill">🔴 CUPO COMPLETO</span>'
-      : '<span class="pill">🟢 '+cantidad+'/5 · '+(5-cantidad)+' lugares disponibles</span>';
-
-    return '<div class="reserve">'+
-      '<div><strong>'+x.name+'</strong><br>'+
-      '<small>'+x.classType+'<br>📅 '+x.date.split('-').reverse().join('/')+
-      ' · ⏰ '+x.time+'<br>'+estado+'</small></div>'+
-      '</div>';
   }).join('')+
   '</div>';
 }
